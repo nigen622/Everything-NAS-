@@ -1,0 +1,1486 @@
+/* ==========================================================================
+   Everything HTTP Server - Dark NAS Theme (main.css)
+   暗色 NAS 风格 · 群晖/极空间观感 · 响应式 · 纯本地无外部依赖
+   ========================================================================== */
+
+/* ---------- 设计系统变量 ---------- */
+:root {
+  --bg-0: #0B1220;
+  --bg-1: #111827;
+  --bg-2: #1E293B;
+  --bg-3: #27364D;
+  --bg-hover: rgba(56, 189, 248, 0.08);
+  --card: rgba(30, 41, 59, 0.72);
+  --card-solid: #16202E;
+  --card-solid-2: #1C2A3C;
+  --border: rgba(148, 163, 184, 0.14);
+  --border-strong: rgba(56, 189, 248, 0.35);
+  --text-1: #F8FAFC;
+  --text-2: #94A3B8;
+  --text-3: #E2E8F0;
+  --accent: #38BDF8;
+  --accent-2: #0EA5E9;
+  --accent-grad: linear-gradient(135deg, #38BDF8 0%, #0EA5E9 100%);
+  --accent-glow: rgba(56, 189, 248, 0.28);
+  --green: #22C55E;
+  --amber: #F59E0B;
+  --red: #EF4444;
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 10px 32px rgba(0, 0, 0, 0.38);
+  --shadow-sm: 0 4px 14px rgba(0, 0, 0, 0.3);
+  --font: 'PingFang SC', 'Microsoft YaHei', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --mono: 'Consolas', 'Courier New', monospace;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- 基础 ---------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-1);
+  background:
+    radial-gradient(1200px 600px at 85% -10%, rgba(56, 189, 248, 0.10), transparent 60%),
+    radial-gradient(900px 500px at -10% 20%, rgba(14, 165, 233, 0.08), transparent 55%),
+    linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  padding: 0;
+}
+
+/* 服务器模板把全部内容包在 <center> 里，这里改回左对齐块布局 */
+center {
+  display: block;
+  text-align: left;
+  width: 100%;
+}
+
+/* 隐藏模板生成的空白 <br> 占位 */
+center > br {
+  display: none;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color 0.18s var(--ease);
+}
+
+a:hover {
+  color: var(--text-1);
+}
+
+td, tr, img {
+  border-width: 0;
+}
+
+::selection {
+  background: var(--accent-glow);
+  color: var(--text-1);
+}
+
+/* ---------- 滚动条 ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-0);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-3);
+  border-radius: 8px;
+  border: 2px solid var(--bg-0);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-2);
+}
+
+/* ---------- Logo ---------- */
+.logo {
+  display: block;
+  width: 176px;
+  height: auto;
+  margin: 26px auto 6px;
+  filter: drop-shadow(0 6px 20px rgba(56, 189, 248, 0.35));
+  border-radius: 12px;
+  transition: transform 0.3s var(--ease);
+}
+.logo:hover {
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* ---------- 搜索表单 ---------- */
+#searchform {
+  max-width: 720px;
+  margin: 18px auto 30px;
+  padding: 0 16px;
+  position: relative;
+}
+
+/* 视图切换按钮（由 nas.js 注入到搜索框旁） */
+.nas-view-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin: -6px auto 22px;
+}
+
+.nas-view-toggle button {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: var(--card-solid);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 18px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s var(--ease);
+}
+.nas-view-toggle button:hover {
+  color: var(--text-1);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* 视图按钮内小图标（CSS 绘制，不依赖 emoji/字体图标） */
+.nas-ic-list, .nas-ic-wall {
+  display: inline-block;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+.nas-ic-list {
+  background:
+    linear-gradient(currentColor, currentColor) 0 0 / 100% 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 0 5px / 100% 2px no-repeat,
+    linear-gradient(currentColor, currentColor) 0 10px / 100% 2px no-repeat;
+  opacity: 0.9;
+}
+.nas-ic-wall {
+  border: 2px solid currentColor;
+  border-radius: 3px;
+  background: linear-gradient(currentColor, currentColor) 0 0 / 100% 2px no-repeat;
+  box-shadow: inset 0 3px 0 0 currentColor, inset 0 -3px 0 0 currentColor;
+}
+.nas-view-toggle button.active {
+  color: #04222E;
+  background: var(--accent-grad);
+  border-color: transparent;
+  font-weight: 600;
+  box-shadow: 0 6px 18px var(--accent-glow);
+}
+
+.searchbox {
+  width: 100% !important;
+  font-family: var(--font);
+  font-size: 17px;
+  color: var(--text-1);
+  background: var(--card-solid);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 14px 22px;
+  outline: none;
+  transition: all 0.25s var(--ease);
+  box-shadow: var(--shadow-sm);
+}
+.searchbox::placeholder {
+  color: var(--text-2);
+  opacity: 0.7;
+}
+.searchbox:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-glow), 0 10px 30px rgba(0, 0, 0, 0.35);
+  background: var(--card-solid-2);
+}
+
+/* ---------- 结果表格容器 ---------- */
+table {
+  width: 100% !important;
+  max-width: 1180px;
+  margin: 0 auto !important;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+  padding: 0 16px 60px;
+}
+
+/* 表头 */
+.nameheader, .pathheader, .sizeheader, .modifiedheader {
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-2) !important;
+  padding: 12px 16px !important;
+  background: rgba(15, 23, 42, 0.6);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.nameheader a, .pathheader a, .sizeheader a, .modifiedheader a {
+  color: var(--text-2) !important;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s var(--ease);
+}
+.nameheader a:hover, .pathheader a:hover, .sizeheader a:hover, .modifiedheader a:hover {
+  color: var(--accent) !important;
+}
+
+/* 排序箭头 */
+.updown {
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0.8;
+  filter: invert(0.75) sepia(0.4) saturate(3) hue-rotate(175deg);
+  border-radius: 3px;
+}
+
+/* 分隔阴影线（模板生成的 lineshadow） */
+.lineshadow {
+  background: transparent !important;
+  height: 0 !important;
+}
+
+/* ---------- 数据行（卡片化） ---------- */
+tr.trdata1, tr.trdata2 {
+  background: var(--card);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.22s var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+
+tr.trdata1:hover, tr.trdata2:hover {
+  background: rgba(30, 41, 59, 0.92);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--border-strong);
+}
+
+tr.trdata1 td:first-child, tr.trdata2 td:first-child {
+  border-top-left-radius: var(--radius-md);
+  border-bottom-left-radius: var(--radius-md);
+}
+tr.trdata1 td:last-child, tr.trdata2 td:last-child {
+  border-top-right-radius: var(--radius-md);
+  border-bottom-right-radius: var(--radius-md);
+}
+
+/* 名称 / 路径 / 大小 / 日期 列 */
+.nameheader, .folder, .file, .pathdata, .sizedata, .modifieddata {
+  padding: 12px 16px !important;
+  vertical-align: middle;
+}
+
+.nameheader, .folder, .file {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-3);
+  min-width: 260px;
+}
+
+.pathdata {
+  color: var(--text-2);
+  font-size: 13px;
+  min-width: 120px;
+}
+
+.sizedata {
+  text-align: right;
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--text-2);
+  white-space: nowrap;
+  min-width: 90px;
+}
+
+.modifieddata {
+  color: var(--text-2);
+  font-size: 13px;
+  white-space: nowrap;
+  min-width: 150px;
+}
+
+/* 行内文件链接 */
+tr.trdata1 a, tr.trdata2 a {
+  color: var(--text-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  transition: color 0.18s var(--ease);
+}
+tr.trdata1 a:hover, tr.trdata2 a:hover {
+  color: var(--accent);
+}
+
+/* 文件/文件夹图标 */
+.icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  border-radius: 5px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+}
+
+.nobr {
+  white-space: normal !important;
+}
+
+/* ---------- 目录页：Index of / 上级目录 ---------- */
+.indexof {
+  max-width: 1180px;
+  margin: 22px auto 8px !important;
+  padding: 0 16px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.indexof::before {
+  content: '';
+  width: 6px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--accent-grad);
+  box-shadow: 0 0 14px var(--accent-glow);
+  flex-shrink: 0;
+}
+
+.numresults {
+  max-width: 1180px;
+  margin: 22px auto 8px !important;
+  padding: 0 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+tr.updir td {
+  padding: 8px 16px !important;
+}
+tr.updir a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-2);
+  background: var(--card-solid);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 8px 18px;
+  transition: all 0.2s var(--ease);
+}
+tr.updir a:hover {
+  color: var(--accent);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ---------- 缩略图（图片行内预览，由 nas.js 注入） ---------- */
+.nas-thumb {
+  display: inline-block;
+  width: 112px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: zoom-in;
+  flex-shrink: 0;
+  opacity: 0;
+  transform: scale(0.96);
+  transition: opacity 0.35s var(--ease), transform 0.35s var(--ease), box-shadow 0.2s var(--ease);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  background: linear-gradient(135deg, #1E293B, #27364D);
+}
+.nas-thumb.loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+.nas-thumb:hover {
+  box-shadow: 0 0 0 2px var(--accent), 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* 缩略图列（图片行首列改造） */
+td.nas-thumb-cell {
+  width: 132px;
+  min-width: 132px;
+  max-width: 132px;
+  padding: 8px 6px 8px 12px !important;
+}
+
+/* 图片行名称区 */
+.nas-file-cell {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.nas-file-cell .nas-fname {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 120px;
+}
+
+/* 媒体角标 */
+.nas-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 999px;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+.nas-badge-img {
+  color: #04222E;
+  background: var(--accent-grad);
+}
+.nas-badge-vid {
+  color: #052E16;
+  background: linear-gradient(135deg, #4ADE80, #22C55E);
+}
+.nas-badge-other {
+  color: var(--text-2);
+  background: var(--bg-3);
+}
+
+/* ---------- 视频行海报 ---------- */
+.nas-vposter-wrap {
+  position: relative;
+  display: inline-block;
+  width: 112px;
+  height: 70px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+  transition: all 0.25s var(--ease);
+}
+.nas-vposter-wrap:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 0 2px var(--accent), 0 10px 26px rgba(0, 0, 0, 0.5);
+}
+.nas-vposter-wrap video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.nas-vposter-wrap .nas-play-btn {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent-grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px var(--accent-glow);
+  transition: transform 0.2s var(--ease);
+}
+.nas-vposter-wrap:hover .nas-play-btn {
+  transform: scale(1.12);
+}
+.nas-play-btn::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 12px solid #04222E;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  margin-left: 3px;
+}
+.nas-vposter-wrap .nas-dur {
+  position: absolute;
+  right: 6px;
+  bottom: 5px;
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--text-1);
+  background: rgba(0, 0, 0, 0.68);
+  padding: 1px 6px;
+  border-radius: 5px;
+  backdrop-filter: blur(4px);
+}
+.nas-vposter-wrap .nas-unplayable {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+  font-size: 11px;
+  color: var(--amber);
+}
+.nas-vposter-wrap .nas-unplayable::before {
+  content: '⚠';
+  font-size: 20px;
+}
+
+/* ---------- 灯箱（图片大图） ---------- */
+.nas-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(4, 8, 16, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+.nas-lightbox.open {
+  display: flex;
+  opacity: 1;
+}
+
+.nas-lightbox img {
+  max-width: 92vw;
+  max-height: 82vh;
+  object-fit: contain;
+  border-radius: 10px;
+  box-shadow: var(--shadow-lg);
+  animation: nasZoom 0.3s var(--ease);
+}
+@keyframes nasZoom {
+  from { transform: scale(0.94); opacity: 0.4; }
+  to   { transform: scale(1);   opacity: 1; }
+}
+@keyframes nasFade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.nas-lightbox .nas-lb-name {
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--text-2);
+  max-width: 80vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nas-lightbox .nas-lb-counter {
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nas-lb-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--border-strong);
+  color: var(--text-1);
+  font-size: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s var(--ease);
+  z-index: 2;
+}
+.nas-lb-btn:hover {
+  background: var(--accent);
+  color: #04222E;
+  box-shadow: 0 0 24px var(--accent-glow);
+}
+.nas-lb-prev { left: 22px; }
+.nas-lb-next { right: 22px; }
+
+.nas-lb-close {
+  position: absolute;
+  top: 20px;
+  right: 22px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid var(--border);
+  color: var(--text-1);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  z-index: 2;
+}
+.nas-lb-close:hover {
+  background: var(--red);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+/* ---------- 影院播放器 ---------- */
+.nas-player {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  background: #000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+.nas-player.open {
+  display: flex;
+  animation: nasFade 0.25s var(--ease);
+}
+
+/* 舞台：黑场容器，圆角外壳（全屏时撑满） */
+.nas-player-stage {
+  position: relative;
+  width: min(1100px, 100%);
+  max-height: 100%;
+  background: #000;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75);
+}
+.nas-player-stage video {
+  width: 100%;
+  max-height: 88vh;
+  background: #000;
+  display: block;
+  cursor: pointer;
+}
+
+/* 顶部标题栏（渐隐） */
+.nas-p-top {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.85), transparent);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+  pointer-events: none;
+}
+.nas-p-top .nas-p-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #F8FAFC;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+.nas-p-top .nas-p-close {
+  pointer-events: auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: #F8FAFC;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+  flex-shrink: 0;
+}
+.nas-p-top .nas-p-close:hover {
+  background: var(--red);
+  transform: rotate(90deg);
+}
+
+/* 中央大播放按钮（暂停态显示） */
+.nas-p-bigplay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  opacity: 0;
+  transform-origin: center;
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+  pointer-events: none;
+}
+.nas-player.playing .nas-p-bigplay {
+  opacity: 0;
+}
+.nas-player:not(.playing) .nas-p-bigplay {
+  opacity: 1;
+}
+.nas-player:not(.playing) .nas-p-bigplay:hover {
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+/* 底部控制条（渐隐） */
+.nas-p-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 3;
+  padding: 26px 18px 14px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.9), transparent);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+  pointer-events: none;
+}
+.nas-player.bar-show .nas-p-top,
+.nas-player.bar-show .nas-p-controls {
+  opacity: 1;
+}
+.nas-player.bar-show .nas-p-top,
+.nas-player.bar-show .nas-p-controls {
+  pointer-events: auto;
+}
+
+/* 进度条 */
+.nas-p-progress {
+  position: relative;
+  height: 20px;
+  margin: 0 2px 4px;
+  cursor: pointer;
+  touch-action: none;
+}
+.nas-p-progress::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.nas-p-progress .nas-p-buffer {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  width: 0%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.3);
+  transition: width 0.2s linear;
+}
+.nas-p-progress .nas-p-played {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 4px;
+  transform: translateY(-50%);
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent), #7DD3FC);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+}
+.nas-p-progress .nas-p-seek {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.25), 0 2px 8px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.2s var(--ease);
+}
+.nas-p-progress:hover .nas-p-seek,
+.nas-p-progress:active .nas-p-seek {
+  opacity: 1;
+}
+
+/* 按钮行 */
+.nas-p-btns {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #F8FAFC;
+}
+.nas-p-btns button,
+.nas-p-btns a {
+  pointer-events: auto;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #F8FAFC;
+  font-family: var(--font);
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s var(--ease);
+}
+.nas-p-btns button:hover,
+.nas-p-btns a:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+.nas-p-btns .nas-p-play {
+  font-size: 13px;
+  width: 38px;
+}
+.nas-p-btns .nas-p-time {
+  font-size: 12.5px;
+  color: #CBD5E1;
+  font-variant-numeric: tabular-nums;
+  margin-left: 4px;
+  white-space: nowrap;
+}
+.nas-p-btns .nas-p-grow {
+  flex: 1;
+}
+
+/* 播放中：鼠标静止自动隐藏控制条（保留圆点） */
+.nas-player.bar-show {
+  cursor: default;
+}
+.nas-player:not(.bar-show) .nas-p-progress .nas-p-seek {
+  opacity: 0;
+}
+
+/* 编码不支持提示 */
+.nas-player-msg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-2);
+  background: #0B1220;
+  cursor: pointer;
+}
+
+/* 提示层右上角关闭按钮（解码失败时同样可以返回） */
+.nas-player-msg .nas-pm-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(30, 41, 59, 0.8);
+  color: var(--text-1);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s var(--ease);
+}
+.nas-player-msg .nas-pm-close:hover {
+  background: var(--red);
+  color: #fff;
+  transform: rotate(90deg);
+}
+.nas-player-msg .nas-pm-title {
+  font-size: 17px;
+  color: var(--amber);
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.nas-player-msg p {
+  margin: 4px 0;
+  max-width: 480px;
+}
+.nas-player-msg a {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 15px;
+}
+
+/* 全屏：黑场撑满、无圆角、视频最大化 */
+.nas-player:fullscreen,
+.nas-player:-webkit-full-screen {
+  padding: 0;
+  background: #000;
+  border-radius: 0;
+}
+.nas-player:fullscreen .nas-player-stage,
+.nas-player:-webkit-full-screen .nas-player-stage {
+  width: 100%;
+  max-height: none;
+  border-radius: 0;
+  box-shadow: none;
+  height: 100%;
+}
+.nas-player:fullscreen .nas-player-stage video,
+.nas-player:-webkit-full-screen .nas-player-stage video {
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  object-fit: contain;
+}
+.nas-player:fullscreen .nas-p-controls,
+.nas-player:-webkit-full-screen .nas-p-controls {
+  padding-bottom: 24px;
+}
+
+/* ---------- 卡片视图（列表/卡片 全局切换，所有文件类型通用） ---------- */
+.nas-wall {
+  display: none;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 16px 60px;
+}
+.nas-wall.open {
+  display: block;
+  animation: nasFadeUp 0.35s var(--ease);
+}
+@keyframes nasFadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.nas-wall-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin: 22px 0 18px;
+}
+.nas-wall-head h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-1);
+  letter-spacing: 0.01em;
+}
+.nas-wall-head h2::before {
+  content: '';
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  background: var(--accent-grad);
+  box-shadow: 0 0 12px var(--accent-glow);
+  margin-right: 10px;
+  vertical-align: middle;
+}
+.nas-wall-head span {
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.nas-wall-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.nas-wall-card {
+  position: relative;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--card-solid);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+  box-shadow: var(--shadow-sm);
+}
+.nas-wall-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--border-strong);
+}
+
+.nas-wall-card .nas-wc-media {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1E293B, #0F172A);
+}
+.nas-wall-card .nas-wc-media video,
+.nas-wall-card .nas-wc-media .nas-wc-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+  transition: transform 0.4s var(--ease);
+}
+.nas-wall-card:hover .nas-wc-media video,
+.nas-wall-card:hover .nas-wc-media .nas-wc-img {
+  transform: scale(1.06);
+}
+
+/* 卡片图片缩略图（懒加载淡入） */
+.nas-wall-card .nas-wc-img {
+  opacity: 0;
+  background: linear-gradient(135deg, #1E293B, #27364D);
+}
+.nas-wall-card .nas-wc-img.loaded {
+  opacity: 1;
+  animation: nasImgIn 0.4s var(--ease);
+}
+@keyframes nasImgIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* 文件夹 / 普通文件 图标卡片 */
+.nas-wall-card .nas-wc-icon {
+  flex-direction: column;
+  gap: 12px;
+}
+.nas-wall-card .nas-wc-icon-folder {
+  position: relative;
+  width: 52px;
+  height: 40px;
+  border-radius: 4px 10px 10px 10px;
+  background: linear-gradient(135deg, #FBBF24, #D97706);
+  box-shadow: inset 0 -10px 14px rgba(124, 45, 18, 0.35), 0 8px 20px rgba(245, 158, 11, 0.22);
+  transition: transform 0.3s var(--ease);
+}
+.nas-wall-card .nas-wc-icon-folder::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 0;
+  width: 28px;
+  height: 10px;
+  border-radius: 5px 5px 0 0;
+  background: linear-gradient(135deg, #FCD34D, #F59E0B);
+}
+.nas-wall-card:hover .nas-wc-icon-folder {
+  transform: translateY(-2px) scale(1.05);
+}
+/* 返回上级入口 */
+.nas-card-dir-up {
+  border-style: dashed;
+  border-color: rgba(56, 189, 248, 0.35);
+  background: linear-gradient(160deg, rgba(14, 165, 233, 0.07), rgba(14, 165, 233, 0.02));
+}
+.nas-card-dir-up:hover {
+  border-color: var(--accent);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(56, 189, 248, 0.4);
+}
+.nas-wall-card .nas-wc-icon-up {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 40px;
+  border-radius: 10px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #E0F2FE;
+  background: linear-gradient(135deg, #0EA5E9, #0284C7);
+  box-shadow: inset 0 -10px 14px rgba(2, 6, 23, 0.3), 0 8px 20px rgba(14, 165, 233, 0.25);
+  transition: transform 0.3s var(--ease);
+}
+.nas-wall-card:hover .nas-wc-icon-up {
+  transform: translateY(-2px) scale(1.05);
+}
+.nas-wall-card .nas-wc-doc {
+  width: 38px;
+  height: 46px;
+  border-radius: 6px;
+  background: linear-gradient(160deg, #94A3B8, #526580);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+}
+.nas-wall-card .nas-wc-ext {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-2);
+  background: rgba(15, 23, 42, 0.65);
+  border: 1px solid var(--border);
+  padding: 2px 8px;
+  border-radius: 999px;
+  max-width: 88%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* 不支持播放的格式角标 */
+.nas-wall-card .nas-wc-badge {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #7C2D12;
+  background: linear-gradient(135deg, #FCD34D, #F59E0B);
+  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.3);
+}
+
+/* 卡片信息区动作标签 */
+.nas-wall-card .nas-wc-meta .nas-wc-action {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* 触屏设备：播放按钮常显（无 hover） */
+@media (hover: none) {
+  .nas-wall-card .nas-wc-play {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.nas-wall-card .nas-wc-play {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--accent-grad);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transform: scale(0.7);
+  transition: all 0.25s var(--ease);
+  box-shadow: 0 6px 22px var(--accent-glow);
+}
+.nas-wall-card:hover .nas-wc-play {
+  opacity: 1;
+  transform: scale(1);
+}
+.nas-wall-card .nas-wc-play::after {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 15px solid #04222E;
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  margin-left: 4px;
+}
+
+.nas-wall-card .nas-wc-dur {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-1);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 2px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(4px);
+}
+
+.nas-wall-card .nas-wc-info {
+  padding: 10px 12px 12px;
+}
+.nas-wall-card .nas-wc-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-bottom: 4px;
+}
+.nas-wall-card .nas-wc-meta {
+  font-size: 11.5px;
+  color: var(--text-2);
+  display: flex;
+  justify-content: space-between;
+}
+
+.nas-wall-empty {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-2);
+  font-size: 15px;
+}
+.nas-wall-empty::before {
+  content: '';
+  display: block;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 14px;
+  border: 2px dashed var(--border-strong);
+  background:
+    linear-gradient(var(--accent-glow), var(--accent-glow)) center / 22px 2px no-repeat,
+    linear-gradient(var(--accent-glow), var(--accent-glow)) center / 2px 22px no-repeat;
+  opacity: 0.7;
+}
+
+/* ---------- 分页 ---------- */
+.prevnext {
+  font-weight: 600;
+  padding: 0 4px;
+}
+.prevnext a {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background: var(--card-solid);
+  border: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 13px;
+  transition: all 0.2s var(--ease);
+}
+.prevnext a:hover {
+  color: var(--accent);
+  border-color: var(--border-strong);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.nav {
+  padding: 0 3px;
+}
+.nav a.num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: var(--text-2);
+  font-size: 13px;
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.2s var(--ease);
+}
+.nav a.num:hover {
+  color: var(--accent);
+  border-color: var(--border-strong);
+  background: var(--bg-hover);
+}
+.nav b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: 999px;
+  color: #04222E;
+  background: var(--accent-grad);
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px var(--accent-glow);
+}
+
+/* 分页包裹的 <center> */
+center:has(.nav) {
+  text-align: center !important;
+  padding: 8px 0 50px;
+}
+
+/* ---------- 错误页 ---------- */
+body:has(.numresults) h1, body:has(h1) h1 {
+  color: var(--text-1);
+}
+
+/* ---------- 移动端响应式 ---------- */
+@media (max-width: 860px) {
+  .nas-wall-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .logo {
+    width: 120px;
+    margin: 16px auto 4px;
+  }
+
+  #searchform {
+    margin: 12px auto 20px;
+    padding: 0 12px;
+  }
+  .searchbox {
+    font-size: 16px;
+    padding: 13px 18px;
+  }
+
+  .nas-view-toggle {
+    margin: -2px auto 16px;
+    gap: 6px;
+  }
+  .nas-view-toggle button {
+    padding: 9px 14px;
+    font-size: 12.5px;
+    min-height: 44px;
+  }
+
+  table {
+    padding: 0 8px 40px;
+  }
+
+  /* 表头在移动端隐藏，改卡片流 */
+  .nameheader, .pathheader, .sizeheader, .modifiedheader {
+    display: none;
+  }
+
+  tr.trdata1, tr.trdata2 {
+    display: block;
+    margin: 0 0 10px;
+    border-radius: var(--radius-md);
+  }
+  tr.trdata1 td, tr.trdata2 td {
+    display: block;
+    width: 100% !important;
+    border-radius: 0 !important;
+    padding: 8px 14px !important;
+  }
+  tr.trdata1 td:first-child, tr.trdata2 td:first-child {
+    padding-top: 12px !important;
+  }
+  tr.trdata1 td:last-child, tr.trdata2 td:last-child {
+    padding-bottom: 12px !important;
+  }
+
+  .sizedata {
+    text-align: left;
+    padding-left: 14px !important;
+  }
+  .modifieddata {
+    font-size: 12px;
+  }
+
+  td.nas-thumb-cell {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    padding: 12px 14px 4px !important;
+  }
+  .nas-thumb, .nas-vposter-wrap {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .nas-wall-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .nas-wall-head h2 {
+    font-size: 17px;
+  }
+
+  /* 灯箱/播放器移动端适配 */
+  .nas-lb-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+  .nas-lb-prev { left: 8px; }
+  .nas-lb-next { right: 8px; }
+  .nas-lb-close {
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+  }
+  .nas-player {
+    padding: 0;
+  }
+  .nas-player-stage {
+    width: 100%;
+    height: 100%;
+    max-height: none;
+    border-radius: 0;
+  }
+  .nas-player-stage video {
+    max-height: none;
+    height: 100%;
+    object-fit: contain;
+  }
+  .nas-p-top {
+    padding: 12px 14px;
+  }
+  .nas-p-top .nas-p-name {
+    font-size: 12.5px;
+  }
+  .nas-p-controls {
+    padding: 22px 12px 12px;
+  }
+  .nas-p-bigplay {
+    width: 64px;
+    height: 64px;
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 420px) {
+  .nas-wall-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .searchbox {
+    font-size: 15px;
+  }
+}
