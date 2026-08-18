@@ -15,7 +15,7 @@ Everything 自带一个轻量 HTTP 服务器，允许通过浏览器搜索和访
 - **视频**：页面内 HTML5 在线播放，可拖拽进度、倍速、全屏；浏览器无法解码的编码自动识别并给出下载兜底
 - **整体**：群晖 / 极空间风格的暗色主题，移动端 / 平板 / 桌面全适配
 
-全部资源本地化、零外部依赖、无后台进程，开启 Everything 的 HTTP 服务器即可生效。
+样式、图标全部本地化、无后台进程；`nas.js` 需通过**外链**加载才能生效（详见[注意事项](#注意事项)），开启 Everything 的 HTTP 服务器即可使用。
 
 ---
 
@@ -70,7 +70,7 @@ HTTP Server/
 └── everything.gif            # Everything 徽标
 ```
 
-> 其中 `main.css`、`nas.js`、`logo.png` 为模板新增资源；`*.gif` 与 `favicon.ico` 用于覆盖服务器默认图标。
+> 其中 `main.css`、`nas.js`、`logo.png` 为模板新增资源；`*.gif` 与 `favicon.ico` 用于覆盖服务器默认图标。`main.css` / `logo.png` 走本地加载，`nas.js` 必须走外链（本地不渲染）。
 
 ---
 
@@ -142,9 +142,9 @@ http_server_strings=D:\Program Files\Everything\HTTP Server\http_server_strings.
 
 Everything 内置 HTTP 服务器的页面是**服务器端生成的 HTML**，无法直接替换整个页面。模板通过两层机制实现定制：
 
-1. **`http_server_strings.ini`** — Everything 官方支持的自定义模板字符串，可改写服务器输出页面的 HTML 骨架（`<head>`、Logo、搜索表单、结果表格、分页等），在其中注入 `/main.css` 与 `/nas.js` 的引用。
+1. **`http_server_strings.ini`** — Everything 官方支持的自定义模板字符串，可改写服务器输出页面的 HTML 骨架（`<head>`、Logo、搜索表单、结果表格、分页等），在其中注入本地 `/main.css`，以及**外链**加载的 `nas.js`（外链 URL 可替换为你自己的地址）。
 
-2. **静态资源覆盖** — 服务器会优先从 `HTTP Server` 目录加载同名资源文件，因此放入自定义的 `main.css`、`nas.js`、`logo.png` 即可完全接管样式与交互。
+2. **静态资源覆盖** — 服务器会优先从 `HTTP Server` 目录加载同名资源文件，因此放入自定义的 `main.css`、`logo.png` 即可完全接管样式与品牌图标（`nas.js` 例外，见注意事项）。
 
 `nas.js` 在页面加载后解析服务器渲染出的结果表格，提取每个条目的类型（文件夹 / 图片 / 视频 / 普通文件）与链接，再构建卡片墙、灯箱、播放器等增强 UI，全程**不改动服务器逻辑**。
 
@@ -152,8 +152,10 @@ Everything 内置 HTTP 服务器的页面是**服务器端生成的 HTML**，无
 
 ## 注意事项
 
-- **版本兼容**：适用于 Everything 内置 HTTP 服务器（当前使用 Everything 1.4.1.1023 验证通过）；升级到 1.5 后模板字符串机制依然可用
-- **外链兜底机制**：`http_server_strings.ini` 中默认先尝试从远程地址加载 `nas.js`（便于统一更新），失败后自动回落到本地 `/nas.js`。**建议改为纯本地加载**，避免依赖外部地址：删除 head_end 中的外链 `<script>` 与兜底脚本，直接使用 `<script defer src="/nas.js"></script>`
+- **版本兼容**：适用于 Everything 内置 HTTP 服务器（当前使用 Everything 1.4.1.1023 验证通过）；
+- **`nas.js` 必须外链加载**：Everything 内置 HTTP 服务器对本地脚本的响应存在限制，引用 `/nas.js` 不会渲染增强 UI。`head_end` 中默认使用外链 `https://everythingnas.pages.dev/nas.js`（Cloudflare Pages 免费托管）。两种用法：
+  - **使用默认外链**：保持 `head_end` 配置不变即可，由维护者统一更新脚本
+  - **自建外链**：把 `HTTP Server\nas.js` 上传到你自己的个人服务器 / 对象存储 / CDN，得到可访问的 URL（如 `https://你的域名/nas.js`），替换 `head_end` 中 `<script defer src="...">` 的地址即可
 - **视频编码**：`mkv` 等封装格式即使编码支持，部分浏览器也可能无法播放，会走下载兜底提示，属正常现象
 - **范围请求**：Everything 支持 HTTP Range Request，视频拖拽进度条依赖此能力，请勿在服务器端代理中禁用
 - **移动端**：推荐现代浏览器（Chrome / Edge / Safari），老版本浏览器可能缺少 `IntersectionObserver`、`pointer events` 支持（均有降级处理）
